@@ -55,6 +55,7 @@ Download and run the latest release from the [Download Links](#%EF%B8%8F-downloa
 1. Launch QR Grabber:
    - From binary: Run the downloaded executable
    - From source: `python main.py`
+   - If QR Grabber is already open, launching it again will show a message and reuse the existing instance
 
 2. Press `Ctrl+Alt+Q` or use the system tray icon to activate
 3. Select screen area containing QR code

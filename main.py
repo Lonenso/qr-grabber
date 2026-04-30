@@ -6,6 +6,7 @@ from src.services.notification_service import NotificationService
 from src.ui.snipping_tool import TkinterSnippingTool
 from src.ui.tray_icon import TrayIconManager
 from src.utils.exceptions import handle_exception
+from src.utils.single_instance import SingleInstance, show_already_running_message
 from src.utils.startup_manager import set_startup_registry, is_startup_enabled
 import threading
 import sys
@@ -88,15 +89,23 @@ class QRCodeDetectionApp:
 
 
 def main() -> None:
+    instance_lock = SingleInstance("qr_grabber")
     try:
         # Capture any uncaught exceptions
         sys.excepthook = handle_exception
+
+        if not instance_lock.acquire():
+            logger.warning("Application launch blocked because another instance is running")
+            show_already_running_message("QR Grabber")
+            return
 
         # Create and run the application
         app = QRCodeDetectionApp()
         app.run()
     except Exception as e:
         logger.critical(f"Fatal application error: {e}", exc_info=True)
+    finally:
+        instance_lock.release()
 
 
 if __name__ == "__main__":
